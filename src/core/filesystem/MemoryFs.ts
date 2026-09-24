@@ -8,11 +8,23 @@ export interface FileNode {
   updatedAt: number;
 }
 
+type FSEventListener = (event: 'change' | 'delete' | 'create', path: string) => void;
+
 export class MemoryFS {
   private root: FileNode[];
+  private listeners: Set<FSEventListener> = new Set();
 
   constructor(initialFiles: FileNode[] = []) {
     this.root = initialFiles;
+  }
+
+  public subscribe(listener: FSEventListener): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  private notify(event: 'change' | 'delete' | 'create', path: string) {
+    this.listeners.forEach((fn) => fn(event, path));
   }
 
   public getTree(): FileNode[] {
@@ -25,7 +37,8 @@ export class MemoryFS {
   }
 
   public writeFile(path: string, content: string): boolean {
-    const parts = path.split('/').filter(Boolean);
+    const normalized = path.startsWith('/') ? path : '/' + path;
+    const parts = normalized.split('/').filter(Boolean);
     const fileName = parts.pop();
     if (!fileName) return false;
 
@@ -50,6 +63,8 @@ export class MemoryFS {
     }
 
     const existingFile = currentLevel.find((n) => n.name === fileName && n.type === 'file');
+    const isNew = !existingFile;
+
     if (existingFile) {
       existingFile.content = content;
       existingFile.updatedAt = Date.now();
@@ -57,37 +72,32 @@ export class MemoryFS {
       currentLevel.push({
         id: `file-${Math.random().toString(36).substring(2, 9)}`,
         name: fileName,
-        path: path.startsWith('/') ? path : '/' + path,
+        path: normalized,
         type: 'file',
         content,
         updatedAt: Date.now(),
       });
     }
+
+    this.notify(isNew ? 'create' : 'change', normalized);
     return true;
   }
 
-  public searchCode(query: string): { path: string; line: number; snippet: string }[] {
-    const results: { path: string; line: number; snippet: string }[] = [];
-    const searchRecursively = (nodes: FileNode[]) => {
-      for (const node of nodes) {
-        if (node.type === 'directory' && node.children) {
-          searchRecursively(node.children);
-        } else if (node.type === 'file' && node.content) {
-          const lines = node.content.split('\n');
-          lines.forEach((lineText, idx) => {
-            if (lineText.toLowerCase().includes(query.toLowerCase())) {
-              results.push({
-                path: node.path,
-                line: idx + 1,
-                snippet: lineText.trim(),
-              });
-            }
-          });
-        }
-      }
-    };
-    searchRecursively(this.root);
-    return results;
+  public deleteNode(path: string): boolean {
+    const normalized = path.startsWith('/') ? path : '/' + path;
+    const parentDir = normalized.substring(0, normalized.lastIndexOf('/')) || '/';
+    const targetName = normalized.substring(normalized.lastIndexOf('/') + 1);
+
+    const parentList = parentDir === '/' ? this.root : this.findNode(parentDir, this.root)?.children;
+    if (!parentList) return false;
+
+    const index = parentList.findIndex((n) => n.name === targetName);
+    if (index !== -1) {
+      parentList.splice(index, 1);
+      this.notify('delete', normalized);
+      return true;
+    }
+    return false;
   }
 
   private findNode(path: string, nodes: FileNode[]): FileNode | null {
