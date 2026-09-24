@@ -3,7 +3,7 @@
 ## System Overview
 - **Platform Name**: NEXORA
 - **Tagline**: Describe it. Build it. Ship it.
-- **Current Architecture Phase**: Phase 2 — Code Editor & Multi-Tab Workspace
+- **Current Architecture Phase**: Phase 3 — AI Chat System & Streaming Code Mutations
 - **Environment Status**: Runnable & Stable
 
 ---
@@ -11,21 +11,22 @@
 ## Task Matrix
 
 ### COMPLETED
-- [x] Phase 1 Architectural Foundations & MemoryFS Storage Engine
-- [x] Reactive Event-Driven Filesystem Subscribers (`MemoryFS.subscribe`)
-- [x] Multi-Tab Buffer & Workspace State Management Store (`useEditorStore`)
-- [x] Custom High-Performance Code Editor with Line Numbers, Shortcuts & Dirty Indicators (`CodeEditor`)
-- [x] Interactive File Explorer Tree with Creation, Deletion & Expansion Controls (`FileExplorer`)
-- [x] Tab Bar Component with Dirty Status Badges & Quick Close Controls (`TabBar`)
+- [x] Phase 1 Architectural Foundations & Virtual Memory Filesystem (`MemoryFS`)
+- [x] Phase 2 High-Performance Multi-Tab Code Editor & File Explorer UI
+- [x] Provider-Agnostic Model Interface & Streaming Driver (`AIModelAdapter` + `MockStreamingAdapter`)
+- [x] Controlled Tool Registry (`ToolRegistry`) with `write_file`, `edit_file`, and `delete_file` bindings
+- [x] AI Chat Interface (`AIChatPanel`) with real-time tool execution status badges and file mutation indicators
+- [x] Agent Store (`useAgentStore`) connecting chat streaming directly to virtual filesystem modifications
 
 ### IN PROGRESS
-- [ ] Phase 3 — AI Chat Interface, Model Processing Adapter & Prompt Engine
+- [ ] Phase 4 — Multi-Agent Memory, Project Plan Viewer & State Tracking
+- [ ] Phase 5 — Live Preview Engine & Isolated Code Execution Sandbox
 
 ### BLOCKED
-*None. Workspace & Code Editor systems fully functional.*
+*None. Agent prompt processing and virtual file mutation loop operational.*
 
 ---
 
 ## Next Tasks Roadmap
-1. **Phase 3 Integration**: Wire AI agent generation directly into `MemoryFS` file writing tools so agent edits trigger live tab buffer refreshes.
-2. **Phase 4 Execution Runner**: Build the isolated sandbox iframe executor to run and render modified virtual workspace files live.
+1. **Phase 4 Agent Memory Sync**: Render active `.nexora/plan.md` state directly inside an interactive Plan Viewer tab.
+2. **Phase 5 Sandboxed Live Preview**: Build the preview pane iframe runner to render generated React/HTML apps directly from `MemoryFS`.
