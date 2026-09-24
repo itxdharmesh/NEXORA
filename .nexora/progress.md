@@ -3,7 +3,7 @@
 ## System Overview
 - **Platform Name**: NEXORA
 - **Tagline**: Describe it. Build it. Ship it.
-- **Current Architecture Phase**: Phase 3 — AI Chat System & Streaming Code Mutations
+- **Current Architecture Phase**: Phase 4 — Agent Memory & Project State System
 - **Environment Status**: Runnable & Stable
 
 ---
@@ -13,20 +13,20 @@
 ### COMPLETED
 - [x] Phase 1 Architectural Foundations & Virtual Memory Filesystem (`MemoryFS`)
 - [x] Phase 2 High-Performance Multi-Tab Code Editor & File Explorer UI
-- [x] Provider-Agnostic Model Interface & Streaming Driver (`AIModelAdapter` + `MockStreamingAdapter`)
-- [x] Controlled Tool Registry (`ToolRegistry`) with `write_file`, `edit_file`, and `delete_file` bindings
-- [x] AI Chat Interface (`AIChatPanel`) with real-time tool execution status badges and file mutation indicators
-- [x] Agent Store (`useAgentStore`) connecting chat streaming directly to virtual filesystem modifications
+- [x] Phase 3 AI Chat System, Provider Adapter & Streaming Tool Dispatcher
+- [x] Persistent IndexedDB Storage Adapter for Workspace State (`IndexedDBAdapter`)
+- [x] Project Memory Manager for Reading/Writing `.nexora/` Configuration & Progress Log (`ProjectMemoryManager`)
+- [x] Interactive Multi-Tab Plan Viewer Component (`PlanViewer`) rendering `plan.md`, `decisions.md`, and `errors.md` live
 
 ### IN PROGRESS
-- [ ] Phase 4 — Multi-Agent Memory, Project Plan Viewer & State Tracking
-- [ ] Phase 5 — Live Preview Engine & Isolated Code Execution Sandbox
+- [ ] Phase 5 — Live Preview Engine & Sandboxed Code Runner
+- [ ] Phase 6 — Self-Debugging & Error Analysis Agent Loop
 
 ### BLOCKED
-*None. Agent prompt processing and virtual file mutation loop operational.*
+*None. Agent memory and state persistence system fully operational.*
 
 ---
 
 ## Next Tasks Roadmap
-1. **Phase 4 Agent Memory Sync**: Render active `.nexora/plan.md` state directly inside an interactive Plan Viewer tab.
-2. **Phase 5 Sandboxed Live Preview**: Build the preview pane iframe runner to render generated React/HTML apps directly from `MemoryFS`.
+1. **Phase 5 Sandboxed Live Preview**: Construct the isolated iframe execution engine to compile and render VirtualFS React/HTML bundles live.
+2. **Phase 6 Error Capture Loop**: Connect iframe console and window error hooks directly to `.nexora/errors.md` for automated self-healing.
